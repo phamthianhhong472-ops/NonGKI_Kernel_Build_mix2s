@@ -149,8 +149,12 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/device_kernel/
           cp susfs4ksu/kernel_patches/50_add_susfs_in_kernel-$KERNEL_VERSION.patch ./
-          patch -p1 < 50_add_susfs_in_kernel-${{ env.KERNEL_VERSION }}.patch || true
-
+          patch -p1 < 50_add_susfs_in_kernel-${{ env.KERNEL_VERSION }}.- name: Create Missing Android Headers
+      - name: Create Missing Android Headers
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/system/core/liblog/include/log
+          touch $GITHUB_WORKSPACE/system/core/liblog/include/log/perflog.h
+          echo "Created dummy perflog.h"
       - name: Build Kernel
         run: |
           export PATH=$GITHUB_WORKSPACE/clang-custom/bin:$PATH
