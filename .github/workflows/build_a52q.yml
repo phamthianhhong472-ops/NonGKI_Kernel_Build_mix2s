@@ -157,6 +157,12 @@ jobs:
           sed -i 's/CONFIG_MODULE_SIG_FORCE=y/# CONFIG_MODULE_SIG_FORCE is not set/g' arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "Disabled module signing."
 
+      - name: Fix namespace.c for kernel 4.14
+        run: |
+          cd $GITHUB_WORKSPACE/device_kernel
+          sed -i 's/mnt->mnt\.mnt_flags/mnt->mnt_flags/g' fs/namespace.c
+          echo "Fixed mnt_flags reference in fs/namespace.c for kernel 4.14"
+
       - name: Build Kernel
         run: |
           export PATH=$GITHUB_WORKSPACE/clang-custom/bin:$PATH
