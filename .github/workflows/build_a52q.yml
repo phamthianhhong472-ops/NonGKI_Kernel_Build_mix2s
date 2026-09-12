@@ -134,11 +134,20 @@ jobs:
             fi
           fi
 
+      - name: Fix Script Permissions
+        run: |
+          chmod +x $GITHUB_WORKSPACE/device_kernel/scripts/*.sh
+          chmod +x $GITHUB_WORKSPACE/device_kernel/arch/arm64/kernel/vdso/*.sh
+          find $GITHUB_WORKSPACE/device_kernel -name "*.sh" -exec chmod +x {} \;
+          echo "Fixed execute permissions for all .sh files."
+
       - name: Create Missing Android Headers
         run: |
           mkdir -p $GITHUB_WORKSPACE/system/core/liblog/include/log
           touch $GITHUB_WORKSPACE/system/core/liblog/include/log/perflog.h
-          echo "Created dummy perflog.h"
+          mkdir -p $GITHUB_WORKSPACE/system/logging/liblog/include/log
+          touch $GITHUB_WORKSPACE/system/logging/liblog/include/log/perflog.h
+          echo "Created dummy perflog.h headers."
 
       - name: Disable Module Signing
         run: |
