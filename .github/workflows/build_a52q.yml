@@ -128,13 +128,20 @@ jobs:
       - name: Patch Kernel for no-kprobe
         run: |
           cd $GITHUB_WORKSPACE
+          if [ ! -d "device_kernel" ]; then
+            echo "ERROR: device_kernel directory does not exist!"
+            exit 1
+          fi
           if [[ -f "/tmp/Patches/normal_patches.sh" ]]; then
-            cp /tmp/Patches/normal_patches.sh device_kernel/
-            cd device_kernel
+            cp /tmp/Patches/normal_patches.sh $GITHUB_WORKSPACE/device_kernel/
+            cd $GITHUB_WORKSPACE/device_kernel
             bash normal_patches.sh
-            cp /tmp/Patches/extra_patches.sh device_kernel/
+            cp /tmp/Patches/extra_patches.sh $GITHUB_WORKSPACE/device_kernel/
             bash extra_patches.sh
-            if [[ "${{ env.KERNELSU_NAME }}" != "KernelSU-Next" ]]; then cp /tmp/Patches/backport_patches.sh ./; bash backport_patches.sh; fi
+            if [[ "${{ env.KERNELSU_NAME }}" != "KernelSU-Next" ]]; then 
+              cp /tmp/Patches/backport_patches.sh $GITHUB_WORKSPACE/device_kernel/
+              bash backport_patches.sh
+            fi
           fi
 
       - name: Patch Kernel of SUSFS
