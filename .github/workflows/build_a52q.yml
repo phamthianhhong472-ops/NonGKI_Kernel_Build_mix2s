@@ -160,10 +160,11 @@ jobs:
       - name: Fix namespace.c for kernel 4.14
         run: |
           cd $GITHUB_WORKSPACE/device_kernel
-          sed -i 's/mnt->((struct mount \*)mnt)->mnt\.mnt_flags/mnt->mnt_flags/g' fs/namespace.c
-          sed -i 's/((struct mount \*)mnt)->mnt\.mnt_flags/mnt->mnt_flags/g' fs/namespace.c
-          sed -i 's/mnt->mnt\.mnt_flags/mnt->mnt_flags/g' fs/namespace.c
-          echo "Cleaned up mnt_flags syntax in fs/namespace.c for kernel 4.14"
+          # Kernel 4.14 requires mnt->mnt.mnt_flags instead of mnt->mnt_flags
+          sed -i 's/mnt->mnt_flags/mnt->mnt.mnt_flags/g' fs/namespace.c
+          # Also fix the mnt_parent variant if it exists
+          sed -i 's/mnt->mnt_parent->mnt_flags/mnt->mnt_parent->mnt.mnt_flags/g' fs/namespace.c
+          echo "Fixed namespace.c for kernel 4.14"
 
       - name: Build Kernel
         run: |
