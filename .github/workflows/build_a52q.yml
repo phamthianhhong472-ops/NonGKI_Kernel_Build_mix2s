@@ -160,7 +160,7 @@ jobs:
       - name: Fix namespace.c for kernel 4.14
         run: |
           cd $GITHUB_WORKSPACE/device_kernel
-          sed -i 's/mnt->mnt\.mnt_flags/mnt->mnt_flags/g' fs/namespace.c
+          sed -i 's/mnt->mnt_flags/((struct mount *)mnt)->mnt.mnt_flags/g' fs/namespace.c
           echo "Fixed mnt_flags reference in fs/namespace.c for kernel 4.14"
 
       - name: Build Kernel
